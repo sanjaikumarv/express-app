@@ -1,10 +1,10 @@
-import express, { Request, Response } from "express"
+import express, { Request } from "express"
 import path from "path"
 import userRoutes from "../apis/user/user.routes"
 
 const app = express.Router()
 
-app.get("/hii", (req: Request, res) => {
+app.get("/hii", (_, res) => {
     res.sendFile(path.resolve(__dirname, "../public/index.html"));
 
 })
