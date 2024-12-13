@@ -18,7 +18,7 @@ app.post("/create", validate(schema.createUser), async (req: Request, res: Respo
 })
 
 app.get("/hii", (req: Request, res) => {
-    res.sendFile(path.resolve(__dirname, "../../public/index.html"));
+    res.render('index.html', { message: 'Hello, dynamic world!' });
 })
 
 export default app
