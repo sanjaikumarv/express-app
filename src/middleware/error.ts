@@ -12,7 +12,6 @@ export function validate(schema: Joi.ObjectSchema) {
                 details: messages.join(' and '),
             });
         }
-
         next();
     };
 }

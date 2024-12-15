@@ -7,6 +7,10 @@ const conversationSchema = new Schema({
     },
     message: {
         type: [Types.ObjectId],
-        ref: ""
+        ref: "Message"
     }
-})
+},
+    { timestamps: true }
+)
+
+export default model("COnversation", conversationSchema, "Conversations")

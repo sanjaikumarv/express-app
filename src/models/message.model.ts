@@ -1,4 +1,3 @@
-import { required } from "joi"
 import { Schema, model, Types } from "mongoose"
 
 const messageSchema = new Schema({
@@ -7,7 +6,7 @@ const messageSchema = new Schema({
         ref: "User",
         required: true
     },
-    reciverId: {
+    receiverId: {
         type: Types.ObjectId,
         ref: "User",
         required: true
@@ -15,7 +14,11 @@ const messageSchema = new Schema({
     message: {
         type: String,
         required: true
+    },
+    date: {
+        type: Date,
+        required: true
     }
-})
+}, { timestamps: true })
 
 export default model("Message", messageSchema, "messages")

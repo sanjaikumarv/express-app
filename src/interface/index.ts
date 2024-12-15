@@ -8,9 +8,11 @@ export interface DecodedUser extends JwtPayload {
 }
 
 export interface User {
-    user: {
-        _id?: Types.ObjectId,
-        name: string,
-        email: string
-    }
+    _id?: ObjectId,
+    name: string,
+    email: string
+}
+
+export interface ReqUser extends Request {
+    user: User
 }
