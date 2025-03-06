@@ -11,7 +11,7 @@ export function authenticateUser() {
         if (!authToken) {
             return res.status(401).json({ message: "Unauthorised User" })
         }
-        const decodedUser = jwt.verify<DecodedUser>(authToken, jwtSecret)
+        const decodedUser = jwt.verify(authToken, jwtSecret) as DecodedUser
         const user: User = await userModel.findOne({ email: decodedUser.email })
         if (!user) {
             return res.status(404).json({ message: "User not found" })
