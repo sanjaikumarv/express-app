@@ -56,7 +56,7 @@ function AuthProvider({ children }: AuthContextProps) {
       toast.success(response?.data?.message);
       setUser(userDetails);
       tokenStorage.setToken(accessTokenR);
-      BrowserDatabase.setItem(true, "logged-in");
+      BrowserDatabase.setItem(true, "chat-logged-in");
       setAccessToken(accessTokenR);
       setJustLoggedIn(true);
       console.log("response.data", response.data);
@@ -74,7 +74,7 @@ function AuthProvider({ children }: AuthContextProps) {
     isLoggingOut.current = true;
     try {
       // Clear local state immediately
-      BrowserDatabase.setItem(false, "logged-in");
+      BrowserDatabase.setItem(false, "chat-logged-in");
       tokenStorage.clearToken();
       setAccessToken(null);
       setUser(null);
@@ -90,11 +90,11 @@ function AuthProvider({ children }: AuthContextProps) {
 
   const setInitialState = async () => {
     setInitialLoading(true);
-
     try {
       // Check if user is logged in first
-      const loggedIn = BrowserDatabase.getItem("logged-in");
+      const loggedIn = BrowserDatabase.getItem("chat-logged-in");
       if (!loggedIn) {
+        Router.push(API_ROUTES.LOGIN);
         setInitialLoading(false);
         return;
       }
@@ -110,7 +110,7 @@ function AuthProvider({ children }: AuthContextProps) {
         } catch (decodeError) {
           // If token is invalid, clear everything
           tokenStorage.clearToken();
-          BrowserDatabase.setItem(false, "logged-in");
+          BrowserDatabase.setItem(false, "chat-logged-in");
           setAccessToken(null);
           setUser(null);
         }
@@ -121,7 +121,7 @@ function AuthProvider({ children }: AuthContextProps) {
     } catch (error) {
       // If health check fails, clear everything
       tokenStorage.clearToken();
-      BrowserDatabase.setItem(false, "logged-in");
+      BrowserDatabase.setItem(false, "chat-logged-in");
       setAccessToken(null);
       setUser(null);
     } finally {

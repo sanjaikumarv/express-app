@@ -83,6 +83,12 @@ export async function getUser(req: ReqUser, res: Response) {
   res.json(user);
 }
 
+export async function getUserById(req: ReqUser, res: Response) {
+  console.log("req.params.id", req.params.id);
+  const user = await userModel.findById(req.params.id);
+  res.json(user);
+}
+
 export const refreshToken = async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken;
   const userAuthData = await userModel.findOne({

@@ -15,7 +15,7 @@ axiosII.interceptors.request.use(
     // Modify the request config here (add headers, authentication tokens)
     // If token is present, add it to request's Authorization Header
 
-    const loggedIn = BrowserDatabase.getItem("logged-in");
+    const loggedIn = BrowserDatabase.getItem("chat-logged-in");
     if (!loggedIn) {
       return req;
     }

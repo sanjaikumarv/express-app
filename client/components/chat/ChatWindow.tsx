@@ -5,15 +5,17 @@ import ChatHeader from "./ChatHeader";
 import MessageBubble from "./MessageBubble";
 import ChatInput from "./ChatInput";
 import { User } from "./ChatContainer";
-import { GET_MESSAGES, SEND_MESSAGE } from "@/lib/endpoints";
+import { GET_MESSAGES, GET_USER_BY_ID, SEND_MESSAGE } from "@/lib/endpoints";
 import useSWR from "swr";
 import { fetcher, mutator } from "@/lib/hooks";
 import useSWRMutation from "swr/mutation";
 import { useAuth } from "@/lib/context/AuthContext";
+import { Socket } from "socket.io-client";
 
 interface Message {
   _id: string;
   senderId: string;
+
   receiverId: string;
   message: string;
   timestamp: string;
@@ -21,16 +23,20 @@ interface Message {
 }
 
 interface ChatWindowProps {
-  selectedUser: User | null;
+  selectedUserId: string;
+  socket: Socket;
 }
 
-export default function ChatWindow({ selectedUser }: ChatWindowProps) {
+export default function ChatWindow({
+  selectedUserId,
+  socket,
+}: ChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user: currentUser } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
-
+  const [selectedUser, setSelectedUser] = useState<User>({} as User);
   useSWR(
-    selectedUser?._id && GET_MESSAGES + `/${selectedUser?._id}`,
+    selectedUserId && GET_MESSAGES + `/${selectedUserId}`,
     fetcher<Message[]>(),
     {
       onSuccess(data) {
@@ -38,26 +44,39 @@ export default function ChatWindow({ selectedUser }: ChatWindowProps) {
       },
     }
   );
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const { trigger } = useSWRMutation(
-    SEND_MESSAGE + `/${selectedUser?._id}`,
-    mutator<{ message: string }, Message>("POST"),
+  useSWR(
+    selectedUserId && GET_USER_BY_ID + `/${selectedUserId}`,
+    fetcher<User>(),
     {
-      onSuccess: ({ data }) => {
-        setMessages((prev) => [...prev, data]);
+      onSuccess(data) {
+        setSelectedUser(data);
       },
     }
   );
+  console.log("selectedUser", selectedUser);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+  useEffect(() => {
+    socket?.on("message", (message) => {
+      setMessages((prev) => [...prev, message]);
+    });
 
-  if (!selectedUser) {
+    return () => {
+      socket?.off("message");
+    };
+  }, [socket]);
+
+  const { trigger } = useSWRMutation(
+    SEND_MESSAGE + `/${selectedUserId}`,
+    mutator<{ message: string }, Message>("POST")
+  );
+
+  if (!selectedUserId) {
     return (
       <div className='flex-1 flex items-center justify-center bg-transparent'>
         <div className='text-center p-8 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl max-w-sm mx-4'>
-          <div className='w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-600/20 flex items-center justify-center shadow-[0_0_30px_rgba(79,70,229,0.3)]'>
+          <div className='w-20 h-20 mx-auto mb-6 rounded-full bg-linear-to-br from-blue-500/20 to-purple-600/20 flex items-center justify-center shadow-[0_0_30px_rgba(79,70,229,0.3)]'>
             <svg
               className='w-10 h-10 text-blue-400'
               fill='none'
@@ -71,7 +90,7 @@ export default function ChatWindow({ selectedUser }: ChatWindowProps) {
               />
             </svg>
           </div>
-          <h2 className='text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-3'>
+          <h2 className='text-2xl font-bold bg-linear-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-3'>
             Select a Conversation
           </h2>
           <p className='text-gray-400 leading-relaxed'>
@@ -84,7 +103,7 @@ export default function ChatWindow({ selectedUser }: ChatWindowProps) {
 
   return (
     <div className='flex-1 flex flex-col h-full relative'>
-      <ChatHeader user={selectedUser} />
+      <ChatHeader user={selectedUser || {}} />
 
       <div className='flex-1 overflow-y-auto px-6 py-4 space-y-4 custom-scrollbar'>
         {messages.map((message) => (

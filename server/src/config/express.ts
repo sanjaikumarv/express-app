@@ -1,4 +1,3 @@
-import express from "express";
 import myRoutes from "../apis/main.routes";
 import "./database";
 import morgan from "morgan";
@@ -6,14 +5,14 @@ import cors from "cors";
 import path from "path";
 import nunjucks from "nunjucks";
 import cookieParser from "cookie-parser";
-const app = express();
+import { app } from "./socket";
+import express from "express";
 app.use(express.json());
 app.use(morgan("combined"));
 app.use(express.static("public"));
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    credentials: true,
+    origin: "*",
   })
 );
 app.use(cookieParser());

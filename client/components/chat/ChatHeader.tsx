@@ -6,21 +6,21 @@ interface ChatHeaderProps {
   user: User;
 }
 
-export default function ChatHeader({ user }: ChatHeaderProps) {
+export default function ChatHeader({ user = {} as User }: ChatHeaderProps) {
   return (
     <div className='flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5 backdrop-blur-md sticky top-0 z-20'>
       <div className='flex items-center gap-4'>
         <div className='relative'>
-          <div className='w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg'>
-            {user.name.charAt(0).toUpperCase()}
+          <div className='w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shadow-lg'>
+            {user?.name?.charAt(0).toUpperCase()}
           </div>
-          {user.online && (
+          {user?.online && (
             <div className='absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-[#1a1a2e] rounded-full shadow-sm animate-pulse' />
           )}
         </div>
         <div>
           <h3 className='text-white font-semibold text-lg leading-tight'>
-            {user.name}
+            {user?.name}
           </h3>
           <span
             className={`text-xs ${

@@ -1,18 +1,20 @@
 "use client";
 
 import { User } from "./ChatContainer";
+import { Conversation } from "./Option";
 
 interface UserListItemProps {
-  user: User;
+  conversation: Conversation;
   isSelected: boolean;
   onClick: () => void;
 }
 
-export default function UserListItem({
-  user,
+export default function Conversactions({
+  conversation,
   isSelected,
   onClick,
 }: UserListItemProps) {
+  const user = conversation.participants[0];
   return (
     <div
       onClick={onClick}
@@ -44,23 +46,16 @@ export default function UserListItem({
             {user.name}
           </h4>
           <span className='text-xs text-gray-500 group-hover:text-gray-400'>
-            {user.lastMessageTime}
+            {conversation.participants[0].lastMessageTime}
           </span>
         </div>
         <div className='flex justify-between items-center'>
-          <p
-            className={`text-xs truncate max-w-[140px] ${
-              isSelected
-                ? "text-gray-300"
-                : "text-gray-400 group-hover:text-gray-300"
-            }`}>
-            {user.lastMessage}
-          </p>
-          {user.unreadCount && user.unreadCount > 0 && (
-            <span className='flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-blue-500 text-[10px] font-bold text-white shadow-lg shadow-blue-500/40'>
-              {user.unreadCount}
-            </span>
-          )}
+          {conversation.participants[0].unreadCount &&
+            conversation.participants[0].unreadCount > 0 && (
+              <span className='flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-blue-500 text-[10px] font-bold text-white shadow-lg shadow-blue-500/40'>
+                {conversation.participants[0].unreadCount}
+              </span>
+            )}
         </div>
       </div>
     </div>

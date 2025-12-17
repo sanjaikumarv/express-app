@@ -1,6 +1,7 @@
 import axios from "axios";
 import { LOGOUT, REFRESH } from "./endpoints";
 import BrowserDatabase from "@/utils/BrowserDatabase/BrowserDatabase";
+import { API_ROUTES } from "./routes";
 
 let accessToken: string | null = BrowserDatabase.getItem("accessToken");
 
@@ -26,7 +27,7 @@ export const makeSessionRefresh = async (isAccessTokenExist: string | null) => {
     const response = await axios.get(REFRESH);
     const newAccessToken = response.data.accessToken;
     if (!newAccessToken && isAccessTokenExist) {
-      window.location.href = LOGOUT;
+      window.location.href = API_ROUTES.LOGOUT;
     }
     tokenStorage.setToken(newAccessToken);
     return newAccessToken;

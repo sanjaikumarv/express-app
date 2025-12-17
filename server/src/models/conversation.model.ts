@@ -6,6 +6,7 @@ const conversationSchema = new Schema(
       type: [Types.ObjectId],
       ref: "User",
     },
+
     message: {
       type: [Types.ObjectId],
       ref: "Message",
