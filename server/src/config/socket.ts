@@ -40,22 +40,17 @@ async function checkAuthUser(token: string) {
   }
 }
 io.on("connection", async (socket) => {
-  console.log("Socket attempting connection:", socket.id);
-
   const accessToken = socket.handshake.auth?.accessToken; // ✅ FIX
   const { authenticatedUser, user } = await checkAuthUser(accessToken); // ✅ FIX
 
   if (!authenticatedUser) {
-    console.log("Unauthorized socket:", socket.id);
     socket.disconnect(true);
     return;
   }
 
   userSocketMap[socket.id] = user._id.toString();
 
-  // Broadcast to everyone else that this user is online
-  io.emit("user-status", user);
-  console.log("Authenticated socket:", socket.id);
+  io.to(user._id.toString()).emit("user-status", user);
 
   socket.on("join", ({ conversation, userId }) => {
     if (conversation) socket.join(conversation);
@@ -72,10 +67,8 @@ io.on("connection", async (socket) => {
         },
         { new: true }
       );
-      // Broadcast to everyone that this user is offline
-      io.emit("user-status", user);
+      io.to(user._id.toString()).emit("user-status", user);
       delete userSocketMap[socket.id];
-      console.log("Disconnected:", socket.id);
     }
   });
 });
