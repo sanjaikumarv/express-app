@@ -7,7 +7,7 @@ import Background from "../common/Background";
 import { useAuth } from "@/lib/context/AuthContext";
 import { io } from "socket.io-client";
 import tokenStorage from "@/lib/token-storage";
-import Conversactions from "./Conversactions";
+import Conversactions from "./Conversations";
 export interface User {
   _id: string;
   name: string;

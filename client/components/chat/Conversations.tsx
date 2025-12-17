@@ -9,7 +9,7 @@ interface UserListItemProps {
   onClick: () => void;
 }
 
-export default function Conversactions({
+export default function Conversations({
   conversation,
   isSelected,
   onClick,

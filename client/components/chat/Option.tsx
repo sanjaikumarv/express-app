@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/context/AuthContext";
 import { GET_CONVERSATIONS, GET_USERS } from "@/lib/endpoints";
 import { fetcher } from "@/lib/hooks";
 import useSWR from "swr";
-import Conversactions from "./Conversactions";
+import Conversations from "./Conversations";
 interface UserSidebarProps {
   selectedUser: User | null;
   onSelectUser: (user: User) => void;
@@ -97,7 +97,7 @@ export default function Option({
         {selectedOption === options.CHAT && (
           <div className='space-y-1 mx-4'>
             {conversations.map((conversation) => (
-              <Conversactions
+              <Conversations
                 key={conversation._id}
                 conversation={conversation}
                 isSelected={
