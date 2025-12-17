@@ -1,7 +1,6 @@
-import app from './config/express'
-import { appPort } from './config/env'
+import app from "./config/express";
+import { APP_PORT } from "./config/env";
 
-
-app.listen(appPort, () => {
-    console.log(`App is running ${appPort}`)
-})
+app.listen(APP_PORT, () => {
+  console.log(`App is running ${APP_PORT}`);
+});

@@ -1,19 +1,19 @@
 import mongoose from "mongoose";
-import { dbConnectionString } from "./env";
+import { DB_COLLECTION_STRING } from "./env";
 
-mongoose.connect(dbConnectionString as string);
+mongoose.connect(DB_COLLECTION_STRING as string);
 mongoose.set("debug", false);
 
 mongoose.connection.on("connected", () => {
-    console.log("MongoDB connected successfully");
+  console.log("MongoDB connected successfully");
 });
 
 mongoose.connection.on("error", (err) => {
-    throw new Error("Mongo connection failed");
+  throw new Error("Mongo connection failed");
 });
 
 function close() {
-    mongoose.disconnect();
+  mongoose.disconnect();
 }
 
 export { close, mongoose };

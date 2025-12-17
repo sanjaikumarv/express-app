@@ -1,10 +1,11 @@
 import "dotenv/config";
 
-export const appPort = process.env.APP_PORT || 1000
-
-export const dbConnectionString = process.env.DATABASE_CONNECTION_STRING || ""
-
-export const jwtSecret = process.env.JWT_SECRET || ""
-export const jwtExpiry = process.env.JWT_EXPIRY || ""
-
-
+export const {
+  APP_PORT,
+  DB_COLLECTION_STRING,
+  ACCESS_SECRET = "",
+  ACCESS_EXPIRY = "1d",
+  REFRESH_SECRET = "",
+  REFRESH_EXPIRY = "10d",
+  REFRESH_TOKEN = "",
+} = process.env || {};
