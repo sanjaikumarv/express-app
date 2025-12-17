@@ -18,7 +18,6 @@ export default function MessageBubble({
   message,
   isOwnMessage,
 }: MessageBubbleProps) {
-  console.log("message", message);
   return (
     <div
       className={`flex w-full ${

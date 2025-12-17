@@ -30,7 +30,11 @@ async function checkAuthUser(token: string) {
     if (!user) {
       return { authenticatedUser, user: null };
     }
-    user = await userModel.findByIdAndUpdate(user._id, { online: true });
+    user = await userModel.findByIdAndUpdate(
+      user._id,
+      { online: true },
+      { new: true }
+    );
     authenticatedUser = true;
     return { authenticatedUser, user };
   }
@@ -48,20 +52,31 @@ io.on("connection", async (socket) => {
   }
 
   userSocketMap[socket.id] = user._id.toString();
+
+  // Broadcast to everyone else that this user is online
+  io.emit("user-status", user);
+  console.log("Authenticated socket:", socket.id);
+
   socket.on("join", ({ conversation, userId }) => {
     if (conversation) socket.join(conversation);
+    if (userId) socket.join(userId);
   });
-  io.to(userSocketMap[socket.id]).emit("user-status", user);
+
   socket.on("disconnect", async () => {
-    const user = await userModel.findByIdAndUpdate(
-      new mongoose.Types.ObjectId(userSocketMap[socket.id]),
-      {
-        online: false,
-      }
-    );
-    console.log("Disconnected:", socket.id);
-    delete userSocketMap[socket.id];
-    io.to(userSocketMap[socket.id]).emit("user-status", user);
+    const userId = userSocketMap[socket.id];
+    if (userId) {
+      const user = await userModel.findByIdAndUpdate(
+        userId,
+        {
+          online: false,
+        },
+        { new: true }
+      );
+      // Broadcast to everyone that this user is offline
+      io.emit("user-status", user);
+      delete userSocketMap[socket.id];
+      console.log("Disconnected:", socket.id);
+    }
   });
 });
 

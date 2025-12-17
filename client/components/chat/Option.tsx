@@ -106,6 +106,7 @@ export default function Option({
                 onClick={() => {
                   joinSocket({
                     conversation: conversation._id,
+                    userId: conversation.participants?.[0]._id,
                   });
                   onSelectUser(conversation.participants?.[0]);
                 }}

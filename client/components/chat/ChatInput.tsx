@@ -10,7 +10,6 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
   const [message, setMessage] = useState("");
 
   const handleSend = async () => {
-    console.log("reder");
     if (message.trim()) {
       await onSendMessage({ message });
       setMessage("");

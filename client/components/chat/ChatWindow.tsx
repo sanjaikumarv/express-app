@@ -59,13 +59,23 @@ export default function ChatWindow({
   }, [messages]);
   useEffect(() => {
     socket?.on("message", (message) => {
+      console.log("message--->");
       setMessages((prev) => [...prev, message]);
+    });
+
+    socket?.on("user-status", (data: any) => {
+      console.log("user emit", data);
+      const userId = data._id || data.userId;
+      if (selectedUserId === userId) {
+        setSelectedUser(data);
+      }
     });
 
     return () => {
       socket?.off("message");
+      socket?.off("user-status");
     };
-  }, [socket]);
+  }, [socket, selectedUserId]);
 
   const { trigger } = useSWRMutation(
     SEND_MESSAGE + `/${selectedUserId}`,
