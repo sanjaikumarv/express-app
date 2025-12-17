@@ -7,12 +7,10 @@ import { DecodedUser, ReqUser, User } from "../interface";
 export function authenticateUser() {
   return async (req: ReqUser, res: Response, next: NextFunction) => {
     const authToken = req?.headers?.authorization?.split(" ")[1];
-    console.log("redder auth", authToken);
     if (!authToken) {
       return res.status(401).json({ message: "Unauthorized User" });
     }
     const decodedUser = jwt.verify(authToken, ACCESS_SECRET) as DecodedUser;
-    console.log("decodedUser", decodedUser);
     const user: User = await userModel.findOne({ email: decodedUser.email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });

@@ -16,6 +16,7 @@ import tokenStorage from "../token-storage";
 import PageLoaderSVG from "@/components/common/PageLoaderSVG";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { API_ROUTES } from "../routes";
 
 interface AuthContextProps {
   children: ReactNode;
@@ -50,7 +51,6 @@ function AuthProvider({ children }: AuthContextProps) {
   const login = async (loginDetails: { loginRedirect: boolean }) => {
     try {
       const response = await axiosII.post(LOGIN, loginDetails);
-      console.log("response---->", response);
       const accessTokenR = response.data.accessToken;
       const userDetails: UserValuesInterface = jwtDecode(accessTokenR);
       toast.success(response?.data?.message);
@@ -80,7 +80,7 @@ function AuthProvider({ children }: AuthContextProps) {
       setUser(null);
       const response = await axios.get(LOGOUT);
       toast.success(response.data.message);
-      Router.push(LOGIN);
+      Router.push(API_ROUTES.LOGIN);
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -89,12 +89,6 @@ function AuthProvider({ children }: AuthContextProps) {
   };
 
   const setInitialState = async () => {
-    // Prevent multiple simultaneous initialization
-    if (isInitializing.current) {
-      return;
-    }
-
-    isInitializing.current = true;
     setInitialLoading(true);
 
     try {
@@ -102,7 +96,6 @@ function AuthProvider({ children }: AuthContextProps) {
       const loggedIn = BrowserDatabase.getItem("logged-in");
       if (!loggedIn) {
         setInitialLoading(false);
-        isInitializing.current = false;
         return;
       }
 
@@ -133,7 +126,6 @@ function AuthProvider({ children }: AuthContextProps) {
       setUser(null);
     } finally {
       setInitialLoading(false);
-      isInitializing.current = false;
     }
   };
 

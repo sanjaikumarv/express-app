@@ -15,6 +15,6 @@ app.get("/health-check", (req: Request, res) => {
   res.json({ message: "Server is running" });
 });
 
-app.post("/logout", logout);
+app.get("/logout", logout);
 
 export default app;

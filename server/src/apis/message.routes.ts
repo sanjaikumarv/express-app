@@ -5,6 +5,6 @@ const app = express.Router();
 
 app.post("/send-message/:id", createMessage);
 
-app.get("/get-messages", getMessages);
+app.get("/get-messages/:id", getMessages);
 
 export default app;

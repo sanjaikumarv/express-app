@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/user.model";
 import { getJWTExpiry } from "../utils/functions";
 import { ACCESS_SECRET, REFRESH_SECRET } from "../config/env";
+import { ReqUser } from "../interface";
 
 export async function createUser(req: Request, res: Response) {
   const salt = await bcrypt.genSalt(10);
@@ -73,8 +74,12 @@ export async function login(req: Request, res: Response) {
   });
 }
 
-export async function getUser(req: Request, res: Response) {
-  const user = await userModel.find();
+export async function getUser(req: ReqUser, res: Response) {
+  const user = await userModel.find({
+    _id: {
+      $ne: req.user._id,
+    },
+  });
   res.json(user);
 }
 

@@ -12,6 +12,7 @@ export async function createMessage(req: ReqUser, res: Response) {
     senderId: req.user._id,
     receiverId: req.params.id,
     message: req.body.message,
+    conversation: conversation._id,
     date: new Date(),
   });
 
@@ -25,25 +26,20 @@ export async function createMessage(req: ReqUser, res: Response) {
     conversation.message.push(message._id);
   }
 
-  await Promise.allSettled([message.save(), conversation.save()]);
+  const newMessage = await message.save();
+  await conversation.save();
 
-  const messageData = {
-    _id: message._id.toString(),
-    senderId: req.user._id.toString(),
-    receiverId: req.params.id,
-    message: req.body.message,
-    conversationId: conversation._id.toString(),
-    createdAt: message.createdAt || new Date(),
-  };
-
-  return res.status(200).json(messageData);
+  return res.status(200).json(newMessage);
 }
 
 export async function getMessages(req: ReqUser, res: Response) {
-  console.log("reder");
+  const conversation = await conversationModel.findOne({
+    participants: { $all: [req.user._id, req.params.id] },
+  });
   const messages = await messageModel
-    .find({ senderId: req.user._id })
+    .find({
+      conversation: conversation._id,
+    })
     .populate("receiverId");
-
   res.status(200).json(messages);
 }

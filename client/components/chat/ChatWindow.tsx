@@ -25,16 +25,19 @@ interface ChatWindowProps {
 }
 
 export default function ChatWindow({ selectedUser }: ChatWindowProps) {
-  console.log("selectedUser", selectedUser);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { user: currentUser } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
 
-  useSWR(GET_MESSAGES, fetcher<Message[]>(), {
-    onSuccess(data) {
-      setMessages(data);
-    },
-  });
+  useSWR(
+    selectedUser?._id && GET_MESSAGES + `/${selectedUser?._id}`,
+    fetcher<Message[]>(),
+    {
+      onSuccess(data) {
+        setMessages(data);
+      },
+    }
+  );
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
